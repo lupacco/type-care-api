@@ -1,9 +1,12 @@
 import doctorServices from "../services/doctorServices.js"
+//Types
+import {Request, Response, NextFunction} from "express"
+import { DoctorEntity } from "../protocols/Doctor.js"
 
-async function create(req, res, next){
-    const {type, crm, speciality, userId} = req.body
+async function create(req: Request, res: Response, next: NextFunction){
+    const newDoctor = req.body as Omit<DoctorEntity, "id">
     try {
-        await doctorServices.create(crm, speciality, userId)
+        await doctorServices.create(newDoctor)
         return res.sendStatus(201)
     } catch (err) {
         next(err)

@@ -1,11 +1,11 @@
-function conflictError(message) {
+function conflictError(message: string) {
   return {
     name: "ConflictError",
     message,
   };
 }
 
-function duplicatedEmailError(email) {
+function duplicatedEmailError(email: string) {
   return {
     name: "DuplicatedEmailError",
     message: "There is already an user using this email",
@@ -13,7 +13,7 @@ function duplicatedEmailError(email) {
   };
 }
 
-function duplicatedCpf(cpf){
+function duplicatedCpf(cpf: string){
   return {
     name: "DuplicatedCpfError",
     message: "There is already an user using this CPF",
@@ -21,7 +21,7 @@ function duplicatedCpf(cpf){
   };
 }
 
-function duplicatedCrm(crm){
+function duplicatedCrm(crm: string){
   return {
     name: "DuplicatedCrmError",
     message: "There is already an user using this CRM",
