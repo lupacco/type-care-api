@@ -1,8 +1,10 @@
 import errors from "../errors/index.js";
 import jwt from "jsonwebtoken";
 import userRepository from "../repositories/userRepository.js";
+//Types
+import { Request, Response, NextFunction } from "express";
 
-export async function validateToken(req, res, next) {
+export async function validateToken(req: Request, res: Response, next: NextFunction) {
   const { authorization } = req.headers;
 
   try {
@@ -15,7 +17,7 @@ export async function validateToken(req, res, next) {
     
       if (schema !== "Bearer") throw errors.unauthorizedError();
     
-      jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
+      jwt.verify(token, process.env.SECRET_JWT, async (error: any, decoded: any) => {
 
         try {
             if(error) throw errors.unauthorizedError()
@@ -25,8 +27,6 @@ export async function validateToken(req, res, next) {
                 } = await userRepository.findById(decoded.userId);
 
             if(!user) throw errors.unauthorizedError()
-
-            delete user.password
 
             res.locals.user = user
             next()

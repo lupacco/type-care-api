@@ -13,7 +13,7 @@ async function create(req: Request, res: Response, next: NextFunction){
     }
 }
 
-async function findByName(req, res, next){
+async function findByName(req: Request, res: Response, next: NextFunction){
     const {name} = req.body
 
     try {
@@ -25,7 +25,7 @@ async function findByName(req, res, next){
     }
 }
 
-async function findBySpeciality(req, res, next){
+async function findBySpeciality(req: Request, res: Response, next: NextFunction){
     const {speciality} = req.body
     
     try {
