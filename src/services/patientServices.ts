@@ -3,7 +3,7 @@ import errors from "../errors/index.js";
 import patientRepository from "../repositories/patientRepository.js";
 import userRepository from "../repositories/userRepository.js";
 
-async function create(cpf, userId){
+async function create(cpf: string, userId: number){
     const {rowCount} = await patientRepository.findByCpf(cpf);
 
     if(rowCount){
