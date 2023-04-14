@@ -4,9 +4,9 @@ import patientRepository from "../repositories/patientRepository.js";
 import userRepository from "../repositories/userRepository.js";
 
 async function create(cpf: string, userId: number){
-    const {rowCount} = await patientRepository.findByCpf(cpf);
+    const foundPatient = await patientRepository.findByCpf(cpf);
 
-    if(rowCount){
+    if(foundPatient){
         await userRepository.deleteById(userId)
         throw errors.duplicatedCpf(cpf)
     }

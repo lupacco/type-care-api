@@ -8,12 +8,14 @@ import { UserSignIn, UserSignUp } from "../protocols/User.js";
 
 async function create(newUser: UserSignUp) {
   const {email, password} = newUser
+  
+
   const { rowCount } = await userRepository.findByEmail(email);
-
+  console.log('1')
   if (rowCount) throw errors.duplicatedEmailError(email);
-
+  console.log('2')
   const hashPassword = await bcrypt.hash(password, 10);
-
+  console.log('3')
   return await userRepository.create({
     ...newUser,
     password: hashPassword
@@ -32,7 +34,7 @@ async function signIn(user: UserSignIn) {
   const passwordIsCorrect = await bcrypt.compare(password, foundUser.password);
   if (!passwordIsCorrect) throw errors.invalidCredentialsError();
 
-  const token: string = jwt.sign({ userId: foundUser.id }, process.env.SECRET_JWT);
+  const token: string = jwt.sign({ userId: foundUser.id }, process.env.SECRET_JWT as string);
 
   return {
     token
