@@ -1,7 +1,10 @@
 import connectionDb from "../config/database.js";
+//Types
+import { AppointmentConsult, AppointmentEntity, FreeAppointment } from "../protocols/Appointment.js";
+import { QueryResult } from "pg";
 
-async function create(date, time, doctorId) {
-  return await connectionDb.query(
+async function create(date: string, time: string, doctorId: number) {
+  await connectionDb.query(
     `
     INSERT INTO appointments ("scheduledDate", "scheduledTime",  "doctorId")
     VALUES ($1, $2, $3)
@@ -14,6 +17,7 @@ async function getFreeAppointments() {
   return await connectionDb.query(
     `
     SELECT 
+    aapointments.id,
     appointments."scheduledDate",
     appointments."scheduledTime",
     appointments.status,
@@ -26,10 +30,10 @@ async function getFreeAppointments() {
         ON doctors."userId" = users.id
     WHERE appointments.status='free'
   `
-  );
+  ) as QueryResult<FreeAppointment>;
 }
 
-async function getAppointment(date, time, doctorId) {
+async function getAppointment(date: string, time: string, doctorId: number) {
   return await connectionDb.query(
     `
     SELECT * 
@@ -40,21 +44,20 @@ async function getAppointment(date, time, doctorId) {
     "doctorId"=$3
     `,
     [date, time, doctorId]
-  );
+  ) as QueryResult<AppointmentEntity>;
 }
 
-async function findById(id) {
+async function findById(id: number) {
   return await connectionDb.query(
     `
     SELECT * FROM appointments WHERE id = $1
     `,
     [id]
-  );
+  ) as QueryResult<AppointmentEntity>;
 }
 
-async function schedule(id, patientId) {
-  console.log("schedule");
-  return await connectionDb.query(
+async function schedule(id: number, patientId: number) {
+  await connectionDb.query(
     `
     UPDATE appointments 
     SET status='scheduled', 
@@ -65,8 +68,8 @@ async function schedule(id, patientId) {
   );
 }
 
-async function cancel(id) {
-  return await connectionDb.query(
+async function cancel(id: number) {
+  await connectionDb.query(
     `
     UPDATE appointments 
     SET status='canceled', 
@@ -76,8 +79,8 @@ async function cancel(id) {
   );
 }
 
-async function confirm(id) {
-  return await connectionDb.query(
+async function confirm(id: number) {
+  await connectionDb.query(
     `
     UPDATE appointments 
     SET status='confirmed' 
@@ -87,8 +90,8 @@ async function confirm(id) {
   );
 }
 
-async function finish(id) {
-  return await connectionDb.query(
+async function finish(id: number) {
+  await connectionDb.query(
     `
     UPDATE appointments 
     SET status='done' 
@@ -98,8 +101,8 @@ async function finish(id) {
   );
 }
 
-async function free(id) {
-  return await connectionDb.query(
+async function free(id: number) {
+  await connectionDb.query(
     `
     UPDATE appointments 
     SET status='free', 
@@ -110,7 +113,7 @@ async function free(id) {
   );
 }
 
-async function getPatientScheduledAppointments(patientId) {
+async function getPatientScheduledAppointments(patientId: number) {
   return await connectionDb.query(
     `
     SELECT
@@ -129,10 +132,10 @@ async function getPatientScheduledAppointments(patientId) {
     WHERE appointments.status='scheduled' AND patients.id=$1
     `,
     [patientId]
-  );
+  ) as QueryResult<AppointmentConsult>;
 }
 
-async function getDoctorScheduledAppointments(doctorId) {
+async function getDoctorScheduledAppointments(doctorId: number) {
   return await connectionDb.query(
     `
     SELECT
@@ -150,10 +153,10 @@ async function getDoctorScheduledAppointments(doctorId) {
     WHERE appointments.status='scheduled' AND doctors.id=$1
     `,
     [doctorId]
-  );
+  ) as QueryResult<AppointmentConsult>;
 }
 
-async function getPatientHistory(patientId){
+async function getPatientHistory(patientId: number){
   return await connectionDb.query(
     `
     SELECT
@@ -172,10 +175,10 @@ async function getPatientHistory(patientId){
     WHERE appointments.status='done' AND patients.id=$1
     `,
     [patientId]
-  );
+  ) as QueryResult<AppointmentConsult>;
 }
 
-async function getDoctorHistory(doctorId){
+async function getDoctorHistory(doctorId: number){
   return await connectionDb.query(
     `
     SELECT
@@ -193,7 +196,7 @@ async function getDoctorHistory(doctorId){
     WHERE appointments.status='done' AND doctors.id=$1
     `,
     [doctorId]
-  );
+  ) as QueryResult<AppointmentConsult>;
 }
 
 export default {

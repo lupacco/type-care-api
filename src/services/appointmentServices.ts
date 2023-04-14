@@ -1,14 +1,17 @@
 import errors from "../errors/index.js";
+//Repositories
 import appointmentRepository from "../repositories/appointmentRepository.js";
 import doctorRepository from "../repositories/doctorRepository.js";
 import patientRepository from "../repositories/patientRepository.js";
+//Types
+import { UserEntity } from "../protocols/User.js";
 
 async function getFreeAppointments() {
   const { rows } = await appointmentRepository.getFreeAppointments();
   return rows;
 }
 
-async function create(user, date, time) {
+async function create(user: Omit<UserEntity, "password">, date: string, time: string) {
   if (user.type !== "doctor") throw errors.invalidTypeOfUserError();
 
   const {
@@ -30,7 +33,7 @@ async function create(user, date, time) {
   await appointmentRepository.create(date, time, doctor.id);
 }
 
-async function schedule(user, id) {
+async function schedule(user: Omit<UserEntity, "password">, id: number) {
   if (user.type !== "patient") throw errors.invalidTypeOfUserError();
   const {
     rows: [patient],
@@ -48,7 +51,7 @@ async function schedule(user, id) {
   await appointmentRepository.schedule(id, patient.id);
 }
 
-async function updateStatus(id, status, user) {
+async function updateStatus(id: number, status: string, user: Omit<UserEntity, "password">) {
   if (user.type !== "doctor") throw errors.invalidTypeOfUserError();
 
   const {rows:[appointment]} = await appointmentRepository.findById(id);
@@ -78,7 +81,7 @@ async function updateStatus(id, status, user) {
   }
 }
 
-async function getScheduledAppointments(user){
+async function getScheduledAppointments(user: Omit<UserEntity, "password">){
     switch (user.type) {
         case 'patient':
             const {
@@ -95,7 +98,7 @@ async function getScheduledAppointments(user){
     }
 }
 
-async function getHistory(user){
+async function getHistory(user: Omit<UserEntity, "password">){
     switch (user.type) {
         case 'patient':
             const {

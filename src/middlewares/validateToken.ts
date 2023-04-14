@@ -17,7 +17,7 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
     
       if (schema !== "Bearer") throw errors.unauthorizedError();
     
-      jwt.verify(token, process.env.SECRET_JWT, async (error: any, decoded: any) => {
+      jwt.verify(token, process.env.SECRET_JWT as jwt.Secret, async (error: any, decoded: any) => {
 
         try {
             if(error) throw errors.unauthorizedError()

@@ -1,10 +1,14 @@
 import appointmentServices from "../services/appointmentServices.js"
+//Types
+import {Request, Response, NextFunction} from "express"
+import {AppointmentEntity} from "../protocols/Appointment.js"
+import { UserEntity } from "../protocols/User.js"
 
-async function create(req, res, next){
-    const {date, time} = req.body
-    const {user} = res.locals
+async function create(req: Request, res: Response, next: NextFunction){
+    const {date, time} = req.body as Pick<AppointmentEntity, "date" | "time">
+    const user = res.locals.user as Omit<UserEntity, "password">
     try {
-        const result = await appointmentServices.create(user, date, time)
+        await appointmentServices.create(user, date, time)
         
         return res.sendStatus(201)
     } catch (err) {
@@ -12,55 +16,54 @@ async function create(req, res, next){
     }
 }
 
-async function getFreeAppointments(req, res, next){
+async function getFreeAppointments(req: Request, res: Response, next: NextFunction){
     try {
         const result = await appointmentServices.getFreeAppointments()
-        res.send(result)
-    } catch (err) {
-        next(err)
-    }
-}
-
-async function schedule(req, res, next){
-    const {user} = res.locals
-    const {id} = req.params
-    try {
-        await appointmentServices.schedule(user, id)
-
-        return res.sendStatus(200)
-    } catch (err) {
-        next(err)
-    }
-}
-
-async function updateStatus(req, res, next){
-    const {user} = res.locals
-    const {status, id} = req.params
-    try {
-        await appointmentServices.updateStatus(id, status, user)
-        return res.sendStatus(200)
-    } catch (err) {
-        next(err)
-    }
-}
-
-async function getScheduledAppointments(req, res, next){
-    const {user} = res.locals
-
-    try {
-        const {rows: result} = await appointmentServices.getScheduledAppointments(user)
         return res.status(200).send(result)
     } catch (err) {
         next(err)
     }
 }
 
-async function getHistory(req, res, next){
-    const {user} = res.locals
+async function schedule(req: Request, res: Response, next: NextFunction){
+    const user = res.locals.user as Omit<UserEntity, "password">
+    const {id} = req.params 
+    try {
+        await appointmentServices.schedule(user, Number(id))
+
+        return res.sendStatus(200)
+    } catch (err) {
+        next(err)
+    }
+}
+
+async function updateStatus(req: Request, res: Response, next: NextFunction){
+    const user = res.locals.user as Omit<UserEntity, "password">
+    const {status, id} = req.params
+    try {
+        await appointmentServices.updateStatus(Number(id), status, user)
+        return res.sendStatus(200)
+    } catch (err) {
+        next(err)
+    }
+}
+
+async function getScheduledAppointments(req: Request, res: Response, next: NextFunction){
+    const user = res.locals.user as Omit<UserEntity, "password">
 
     try {
-        console.log(user)
-        const {rows: result} = await appointmentServices.getHistory(user)
+        const result = await appointmentServices.getScheduledAppointments(user)
+        return res.status(200).send(result)
+    } catch (err) {
+        next(err)
+    }
+}
+
+async function getHistory(req: Request, res: Response, next: NextFunction){
+    const user = res.locals.user as Omit<UserEntity, "password">
+
+    try {
+        const result = await appointmentServices.getHistory(user)
         return res.status(200).send(result)
     } catch (err) {
         next(err)
