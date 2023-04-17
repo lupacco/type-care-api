@@ -1,3 +1,4 @@
+import httpStatus from "http-status"
 import appointmentServices from "../services/appointmentServices.js"
 //Types
 import {Request, Response, NextFunction} from "express"
@@ -11,7 +12,7 @@ async function create(req: Request, res: Response, next: NextFunction){
     try {
         await appointmentServices.create(user, date, time)
         
-        return res.sendStatus(201)
+        return res.sendStatus(httpStatus.CREATED)
     } catch (err) {
         next(err)
     }
@@ -20,7 +21,7 @@ async function create(req: Request, res: Response, next: NextFunction){
 async function getFreeAppointments(req: Request, res: Response, next: NextFunction){
     try {
         const { rows: appointments } = await appointmentServices.getFreeAppointments()
-        return res.status(200).send(appointments)
+        return res.status(httpStatus.OK).send(appointments)
     } catch (err) {
         next(err)
     }
@@ -32,7 +33,7 @@ async function schedule(req: Request, res: Response, next: NextFunction){
     try {
         await appointmentServices.schedule(user, Number(id))
 
-        return res.sendStatus(200)
+        return res.sendStatus(httpStatus.OK)
     } catch (err) {
         next(err)
     }
@@ -43,7 +44,7 @@ async function updateStatus(req: Request, res: Response, next: NextFunction){
     const {status, id} = req.params
     try {
         await appointmentServices.updateStatus(Number(id), status, user)
-        return res.sendStatus(200)
+        return res.sendStatus(httpStatus.OK)
     } catch (err) {
         next(err)
     }
@@ -54,7 +55,7 @@ async function getScheduledAppointments(req: Request, res: Response, next: NextF
 
     try {
         const {rows: appointments} = await appointmentServices.getScheduledAppointments(user) as QueryResult;
-        return res.status(200).send(appointments)
+        return res.status(httpStatus.OK).send(appointments)
     } catch (err) {
         next(err)
     }
@@ -65,7 +66,7 @@ async function getHistory(req: Request, res: Response, next: NextFunction){
 
     try {
         const {rows: appointments} = await appointmentServices.getHistory(user) as QueryResult
-        return res.status(200).send(appointments)
+        return res.status(httpStatus.OK).send(appointments)
     } catch (err) {
         next(err)
     }

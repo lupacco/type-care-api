@@ -1,3 +1,4 @@
+import httpStatus from "http-status";
 import patientServices from "../services/patientServices.js";
 //Types
 import { Request, Response, NextFunction } from "express";
@@ -9,7 +10,7 @@ async function create(req: Request, res: Response, next: NextFunction){
         if(type !== 'patient') return next()
 
         await patientServices.create(cpf, userId)
-        return res.sendStatus(201)
+        return res.sendStatus(httpStatus.CREATED)
     } catch (err) {
         next(err)
     }
