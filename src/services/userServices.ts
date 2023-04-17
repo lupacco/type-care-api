@@ -11,11 +11,11 @@ async function create(newUser: UserSignUp) {
   
 
   const { rowCount } = await userRepository.findByEmail(email);
-  console.log('1')
+
   if (rowCount) throw errors.duplicatedEmailError(email);
-  console.log('2')
+
   const hashPassword = await bcrypt.hash(password, 10);
-  console.log('3')
+
   return await userRepository.create({
     ...newUser,
     password: hashPassword

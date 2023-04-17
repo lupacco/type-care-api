@@ -7,8 +7,7 @@ import patientRepository from "../repositories/patientRepository.js";
 import { UserEntity } from "../protocols/User.js";
 
 async function getFreeAppointments() {
-  const { rows } = await appointmentRepository.getFreeAppointments();
-  return rows;
+  return await appointmentRepository.getFreeAppointments();
 }
 
 async function create(user: Omit<UserEntity, "password">, date: string, time: string) {
@@ -56,10 +55,6 @@ async function updateStatus(id: number, status: string, user: Omit<UserEntity, "
 
   const {rows:[appointment]} = await appointmentRepository.findById(id);
   const {rows:[doctor]} = await doctorRepository.findByUserId(user.id);
-
-  console.log(user)
-  console.log(doctor)
-  console.log(appointment)
 
   if(appointment.doctorId !== doctor.id) throw errors.unauthorizedError()
   

@@ -25,6 +25,8 @@ export function handleApplicationErrors(err: Error, req: Request, res: Response,
     return res.status(httpStatus.NOT_FOUND).send({ message: err.message });
   }
 
+  console.log(err)
+
   return res
     .status(httpStatus.INTERNAL_SERVER_ERROR)
     .send({ error: "InternalServerError", message: "Internal Server Error" });

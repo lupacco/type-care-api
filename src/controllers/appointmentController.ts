@@ -3,6 +3,7 @@ import appointmentServices from "../services/appointmentServices.js"
 import {Request, Response, NextFunction} from "express"
 import {AppointmentEntity} from "../protocols/Appointment.js"
 import { UserEntity } from "../protocols/User.js"
+import { QueryResult } from "pg"
 
 async function create(req: Request, res: Response, next: NextFunction){
     const {date, time} = req.body as Pick<AppointmentEntity, "date" | "time">
@@ -18,8 +19,8 @@ async function create(req: Request, res: Response, next: NextFunction){
 
 async function getFreeAppointments(req: Request, res: Response, next: NextFunction){
     try {
-        const result = await appointmentServices.getFreeAppointments()
-        return res.status(200).send(result)
+        const { rows: appointments } = await appointmentServices.getFreeAppointments()
+        return res.status(200).send(appointments)
     } catch (err) {
         next(err)
     }
@@ -52,8 +53,8 @@ async function getScheduledAppointments(req: Request, res: Response, next: NextF
     const user = res.locals.user as Omit<UserEntity, "password">
 
     try {
-        const result = await appointmentServices.getScheduledAppointments(user)
-        return res.status(200).send(result)
+        const {rows: appointments} = await appointmentServices.getScheduledAppointments(user) as QueryResult;
+        return res.status(200).send(appointments)
     } catch (err) {
         next(err)
     }
@@ -63,8 +64,8 @@ async function getHistory(req: Request, res: Response, next: NextFunction){
     const user = res.locals.user as Omit<UserEntity, "password">
 
     try {
-        const result = await appointmentServices.getHistory(user)
-        return res.status(200).send(result)
+        const {rows: appointments} = await appointmentServices.getHistory(user) as QueryResult
+        return res.status(200).send(appointments)
     } catch (err) {
         next(err)
     }

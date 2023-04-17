@@ -14,6 +14,6 @@ server.use(cors())
 server.use(routes)
 server.use(handleApplicationErrors)
 
-const port = 5000 || process.env.PORT
+const port = process.env.PORT || 5000
 
 server.listen(port, () => console.log(`Server running on port: ${port}`))
