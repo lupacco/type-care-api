@@ -1,10 +1,10 @@
-import connectionDb from "../config/database.js";
+import { prisma } from "../config/database.js";
 //Types
 import { AppointmentConsult, AppointmentEntity, FreeAppointment } from "../protocols/Appointment.js";
 import { QueryResult } from "pg";
 
 async function create(date: string, time: string, doctorId: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     INSERT INTO appointments ("scheduledDate", "scheduledTime",  "doctorId")
     VALUES ($1, $2, $3)
@@ -14,7 +14,7 @@ async function create(date: string, time: string, doctorId: number) {
 }
 
 async function getFreeAppointments() {
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT 
     appointments.id,
@@ -34,7 +34,7 @@ async function getFreeAppointments() {
 }
 
 async function getAppointment(date: string, time: string, doctorId: number) {
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT * 
     FROM appointments 
@@ -48,7 +48,7 @@ async function getAppointment(date: string, time: string, doctorId: number) {
 }
 
 async function findById(id: number) {
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT * FROM appointments WHERE id = $1
     `,
@@ -57,7 +57,7 @@ async function findById(id: number) {
 }
 
 async function schedule(id: number, patientId: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     UPDATE appointments 
     SET status='scheduled', 
@@ -69,7 +69,7 @@ async function schedule(id: number, patientId: number) {
 }
 
 async function cancel(id: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     UPDATE appointments 
     SET status='canceled' 
@@ -80,7 +80,7 @@ async function cancel(id: number) {
 }
 
 async function confirm(id: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     UPDATE appointments 
     SET status='confirmed' 
@@ -91,7 +91,7 @@ async function confirm(id: number) {
 }
 
 async function finish(id: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     UPDATE appointments 
     SET status='done' 
@@ -102,7 +102,7 @@ async function finish(id: number) {
 }
 
 async function free(id: number) {
-  await connectionDb.query(
+  await prisma.query(
     `
     UPDATE appointments 
     SET status='free', 
@@ -114,7 +114,7 @@ async function free(id: number) {
 }
 
 async function getPatientScheduledAppointments(patientId: number) {
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT
         appointments.id,
@@ -136,7 +136,7 @@ async function getPatientScheduledAppointments(patientId: number) {
 }
 
 async function getDoctorScheduledAppointments(doctorId: number) {
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT
         appointments.id,
@@ -157,7 +157,7 @@ async function getDoctorScheduledAppointments(doctorId: number) {
 }
 
 async function getPatientHistory(patientId: number){
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT
         appointments.id,
@@ -179,7 +179,7 @@ async function getPatientHistory(patientId: number){
 }
 
 async function getDoctorHistory(doctorId: number){
-  return await connectionDb.query(
+  return await prisma.query(
     `
     SELECT
         appointments.id,

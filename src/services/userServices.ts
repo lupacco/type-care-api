@@ -10,16 +10,18 @@ async function create(newUser: UserSignUp) {
   const {email, password} = newUser
   
 
-  const { rowCount } = await userRepository.findByEmail(email);
+  const foundUser = await userRepository.findByEmail(email);
 
-  if (rowCount) throw errors.duplicatedEmailError(email);
+  if (foundUser) throw errors.duplicatedEmailError(email);
 
   const hashPassword = await bcrypt.hash(password, 10);
 
-  return await userRepository.create({
+  const createdUser = await userRepository.create({
     ...newUser,
     password: hashPassword
   });
+
+  return createdUser;
 }
 
 async function signIn(user: UserSignIn) {

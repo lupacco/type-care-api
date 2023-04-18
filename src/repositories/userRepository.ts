@@ -1,38 +1,47 @@
 import { QueryResult } from "pg";
-import connectionDb from "../config/database.js";
+import { prisma } from "../config/database.js";
 //Types
 import {UserEntity, UserSignUp } from "../protocols/User.js";
 
 async function findByEmail(email: string) {
-  const result = await connectionDb.query(`SELECT * FROM users WHERE email = $1;`, [
-    email,
-  ])
+  const result = await prisma.user.findUnique({
+    where:{
+      email: email
+    }
+  })
 
   return result as QueryResult<UserEntity>
 }
 
 async function create(newUser: UserSignUp) {
   const { type, name, email, password } = newUser;
-  return await connectionDb.query(
-    `
-    INSERT INTO users (type, name, email, password) VALUES ($1, $2, $3, $4)
-    RETURNING id
-    `,
-    [type, name, email, password]
-  ) as QueryResult<{id: number}>;
+  return await prisma.user.create({
+    data: {
+      type: type,
+      name: name,
+      email: email,
+      password: password
+    },
+    select:{
+      id: true
+    }
+  }) as {id: number};
 }
 
 async function deleteById(userId: number) {
-  await connectionDb.query(`DELETE FROM users WHERE id = $1;`, [userId]);
+  await prisma.user.delete({
+    where: {
+      id: userId
+    }
+  })
 }
 
 async function findById(userId: number) {
-  return await connectionDb.query(
-    `
-    SELECT * FROM users WHERE id = $1;
-    `,
-    [userId]
-  ) as QueryResult<Omit<UserEntity, "password">>;
+  return await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+  }) as QueryResult<Omit<UserEntity, "password">>;
 }
 
 export default { findByEmail, create, deleteById, findById };

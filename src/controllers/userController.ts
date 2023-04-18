@@ -9,10 +9,9 @@ async function create(req: Request, res: Response, next: NextFunction){
     const newUser = req.body as UserSignUp
 
     try {
-        const result = await userServices.create(newUser)
-        const createdUserId = result.rows[0].id
+        const {id} = await userServices.create(newUser)
 
-        req.body.userId = createdUserId as number
+        req.body.userId = id
         
         next()
     } catch (err) {

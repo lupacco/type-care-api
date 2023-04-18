@@ -4,7 +4,7 @@ import patientRepository from "../repositories/patientRepository.js";
 import userRepository from "../repositories/userRepository.js";
 
 async function create(cpf: string, userId: number){
-    const {rows: [foundPatient]} = await patientRepository.findByCpf(cpf);
+    const foundPatient = await patientRepository.findByCpf(cpf);
 
     if(foundPatient){
         await userRepository.deleteById(userId)
